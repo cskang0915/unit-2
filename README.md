@@ -7,15 +7,15 @@ class to weapon > many to many
 
 ## Characters
 
->get all characters - /character/ OR /character/all
+>get all characters - /character/ OR /character/all<br/>
 >get one character - /character/:id
 
 
->create new character - /character/new
+>create new character - /character/new<br/>
 >body must include name, class_name_id
 
 
->update one character - /character/update/:id
+>update one character - /character/update/:id<br/>
 >body must include class_name_id
 
 
