@@ -13,7 +13,7 @@ router.get('/', (req, res)=>{
 
 router.get('/all', (req, res)=>{
 	const getAllWeapons = `
-	SELECT weapons.name AS "Weapons", classes.name AS "Class Name", characters.name AS "Character Name" FROM weapons
+	SELECT weapons.name AS "Weapons", weapons.isRanged AS "Ranged", weapons.isMelee AS "Melee", weapons.isMagic AS "Magic", classes.name AS "Class Name", characters.name AS "Character Name" FROM weapons
 	JOIN classes_weapons ON weapon_id = weapons.oid
 	JOIN classes ON class_id = classes.oid
 	JOIN characters ON class_name_id = classes.oid
@@ -31,7 +31,7 @@ router.get('/all', (req, res)=>{
 router.get('/:id', (req, res)=>{
 	const weaponId = req.params.id
 	const getOneWeapon = `
-	SELECT weapons.name AS "Weapons", classes.name AS "Class Name", characters.name AS "Character Name" FROM weapons
+	SELECT weapons.name AS "Weapons", weapons.isRanged AS "Ranged", weapons.isMelee AS "Melee", weapons.isMagic AS "Magic", classes.name AS "Class Name", characters.name AS "Character Name" FROM weapons
 	JOIN classes_weapons ON weapon_id = weapons.oid
 	JOIN classes ON class_id = classes.oid
 	JOIN characters ON class_name_id = classes.oid
@@ -51,8 +51,8 @@ router.get('/:id', (req, res)=>{
 
 router.put('/update/:id', (req, res)=>{
 	const weaponId = req.params.id
-	const updateOneWeapon = `UPDATE weapons SET name = ? where weapons.oid = ${weaponId}`
-	database.run(updateOneWeapon, [req.body.name], (error)=>{
+	const updateOneWeapon = `UPDATE weapons SET isMagic = ? where weapons.oid = ${weaponId}`
+	database.run(updateOneWeapon, [req.body.isMagic], (error)=>{
 		if(error){
 			console.log(`update weapon at ${weaponId} failed`)
 			res.sendStatus(500)
