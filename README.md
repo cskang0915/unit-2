@@ -2,7 +2,7 @@
 
 https://imgur.com/a/eBUSXUr
 
-character to class > one to many
+character to class > one to many<br/>
 class to weapon > many to many
 
 ## Characters
