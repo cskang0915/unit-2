@@ -4,14 +4,28 @@ let database = require('../../database')
 let router = express.Router()
 
 router.get('/', (req, res)=>{
-	res.redirect('/weapon/all')
+	res.redirect('/api/weapon/get/all')
 })
 
 // C
 
+router.post('/create/new', (req, res)=>{
+	const newWeaponValues = [...Object.values(req.body)]
+	const createNewWeapon = `INSERT INTO weapons VALUES (? ? ? ?)`
+	database.run(createNewWeapon, newWeaponValues, (error)=>{
+		if(error){
+			console.log('adding new weapon failed')
+			res.sendStatus(500)
+		}else{
+			console.log('added a new weapon')
+			res.sendStatus(200)
+		}
+	})
+})
+
 // R
 
-router.get('/all', (req, res)=>{
+router.get('/get/all', (req, res)=>{
 	const getAllWeapons = `
 	SELECT weapons.name AS "Weapons", weapons.isRanged AS "Ranged", weapons.isMelee AS "Melee", weapons.isMagic AS "Magic", classes.name AS "Class Name", characters.name AS "Character Name" FROM weapons
 	JOIN classes_weapons ON weapon_id = weapons.oid
@@ -28,7 +42,7 @@ router.get('/all', (req, res)=>{
 	})
 })
 
-router.get('/:id', (req, res)=>{
+router.get('/get/:id', (req, res)=>{
 	const weaponId = req.params.id
 	const getOneWeapon = `
 	SELECT weapons.name AS "Weapons", weapons.isRanged AS "Ranged", weapons.isMelee AS "Melee", weapons.isMagic AS "Magic", classes.name AS "Class Name", characters.name AS "Character Name" FROM weapons
@@ -51,8 +65,12 @@ router.get('/:id', (req, res)=>{
 
 router.put('/update/:id', (req, res)=>{
 	const weaponId = req.params.id
-	const updateOneWeapon = `UPDATE weapons SET isMagic = ? where weapons.oid = ${weaponId}`
-	database.run(updateOneWeapon, [req.body.isMagic], (error)=>{
+	const weaponUpdateKeys = Object.keys(req.body).map((key)=>{
+		return `${key} = ?`
+	})
+	const weaponUpdateValues = [...Object.values(req.body), weaponId]
+	const updateOneWeapon = `UPDATE weapons SET ${weaponUpdateKeys.join(', ')} where weapons.oid = ?`
+	database.run(updateOneWeapon, weaponUpdateValues, (error)=>{
 		if(error){
 			console.log(`update weapon at ${weaponId} failed`)
 			res.sendStatus(500)

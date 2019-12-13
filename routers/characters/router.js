@@ -4,20 +4,20 @@ let database = require('../../database')
 let router = express.Router()
 
 router.get('/', (req, res)=>{
-	res.redirect('/character/all')
+	res.redirect('/api/character/get/all')
 })
 
 // C
 
-router.post('/new', (req, res)=>{
-	const newCharacter = req.body
+router.post('/create/new', (req, res)=>{
+	const newCharacterValues = [...Object.values(req.body)]
 	const createNewCharacter = `INSERT INTO characters VALUES (?, ?)`
-	database.run(createNewCharacter, [newCharacter.name, newCharacter.class_name_id], (error)=>{
+	database.run(createNewCharacter, newCharacterValues, (error)=>{
 		if(error){
 			console.log('adding new character failed')
 			res.sendStatus(500)
 		}else{
-			console.log(`added ${newCharacter}`)
+			console.log(`added a new character`)
 			res.sendStatus(200)
 		}
 	})
@@ -25,7 +25,7 @@ router.post('/new', (req, res)=>{
 
 // R
 
-router.get('/all', (req, res)=>{
+router.get('/get/all', (req, res)=>{
 	const getAllCharacters = `
 	SELECT characters.name AS "Character Name", classes.name AS "Class" FROM characters
 	JOIN classes ON class_name_id = classes.oid
@@ -40,7 +40,7 @@ router.get('/all', (req, res)=>{
 	})
 })
 
-router.get('/:id', (req, res)=>{
+router.get('/get/:id', (req, res)=>{
 	const characterId = req.params.id
 	const getOneCharacter = `
 	SELECT characters.name AS "Character Name", classes.name AS "Class" FROM characters
@@ -61,8 +61,15 @@ router.get('/:id', (req, res)=>{
 
 router.put('/update/:id', (req, res)=>{
 	const characterId = req.params.id
-	const updateOneCharacter = `UPDATE characters SET class_name_id = ? WHERE characters.oid = ${characterId}`
-	database.run(updateOneCharacter, [req.body.class_name_id], (error)=>{
+	const characterUpdateKeys = Object.keys(req.body).map((key)=>{
+		return `${key} = ?`
+	})
+	const characterUpdateValues = [...Object.values(req.body), characterId]
+	const updateOneCharacter = `UPDATE characters SET ${characterUpdateKeys.join(', ')} WHERE characters.oid = ?`
+	console.log(characterUpdateKeys)
+	console.log(characterUpdateValues)
+	console.log(updateOneCharacter)
+	database.run(updateOneCharacter, characterUpdateValues, (error)=>{
 		if(error){
 			console.log(`update character at ${characterId} failed`)
 			res.sendStatus(500)

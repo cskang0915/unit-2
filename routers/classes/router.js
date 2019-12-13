@@ -4,16 +4,31 @@ let database = require('../../database')
 let router = express.Router()
 
 router.get('/', (req, res)=>{
-	res.redirect('/class/all')
+	res.redirect('/api/class/get/all')
 })
 
 // C
 
-router.post('/new', (req, res)=>{
+router.post('/create/new', (req, res)=>{
+	const newClassName = req.body.name
+	const createNewClass = `INSERT INTO classes VALUES (?)`
+	database.run(createNewClass, newClassName, (error)=>{
+		if(error){
+			console.log('adding new class failed')
+			res.sendStatus(500)
+		}else{
+			console.log('added new class')
+			res.sendStatus(200)
+		}
+	})
+})
+
+router.post('/create/new/link', (req, res)=>{
 	const newClass = req.body
 	const createNewClass = `INSERT INTO classes VALUES (?)`
-	const weaponId = req.body.weapon_id
-	database.run(createNewClass, [newClass.name], (error)=>{
+	const weaponId = newClass.weapon_id
+
+	database.run(createNewClass, [newClass.name], function(error){
 		if(error){
 			console.log('adding new class failed')
 			res.sendStatus(500)
@@ -21,7 +36,7 @@ router.post('/new', (req, res)=>{
 			console.log(`added ${newClass}`)
 			const createNewClassWeapon = `INSERT INTO classes_weapons VALUES (?, ?)`
 			for(let i = 0; i < weaponId.length; i++){
-				database.run(createNewClassWeapon, [newClass.class_id, weaponId[i]], (error)=>{
+				database.run(createNewClassWeapon, [this.lastID, weaponId[i]], function(error){
 					if(error){
 						console.log(`adding new class_weapon failed`)
 						res.sendStatus(500)
@@ -37,12 +52,9 @@ router.post('/new', (req, res)=>{
 	})
 })
 
-// repeat classes
-// if repeated then the name overwrites the req.body
-
 // R
 
-router.get('/all', (req, res)=>{
+router.get('/get/all', (req, res)=>{
 	const getAllClasses = `
 	SELECT classes.name AS "Class Name", weapons.name AS "Weapons" FROM classes
 	JOIN classes_weapons ON class_id = classes.oid
@@ -58,7 +70,7 @@ router.get('/all', (req, res)=>{
 	})
 })
 
-router.get('/:id', (req, res)=>{
+router.get('/get/:id', (req, res)=>{
 	const classId = req.params.id
 	const getOneClass = `
 	SELECT classes.name AS "Class Name", weapons.name AS "Weapons" from classes
@@ -71,7 +83,24 @@ router.get('/:id', (req, res)=>{
 			console.log(`get class at ${classId} failed`)
 			res.sendStatus(500)
 		}else{
-			res.status(200).json(results)
+			console.log('aaw')
+			if(results.length === 0){
+				const getNewOneClass = `
+				SELECT classes.name AS "Class Name" from classes
+				WHERE classes.oid = ${classId}
+				`
+
+				database.all(getNewOneClass, (error, results)=>{
+					if(error){
+						console.log(`get class at ${classId} failed`)
+						res.sendStatus(500)
+					}else{
+						res.json(results)
+					}
+				})
+			}else{
+				res.status(200).json(results)
+			}
 		}
 	})
 })

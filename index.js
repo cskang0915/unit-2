@@ -6,12 +6,12 @@ let weaponsRouter = require('./routers/weapons/router')
 let app = express();
 
 app.use(express.json())
-app.use('/character', charactersRouter)
-app.use('/class', classesRouter)
-app.use('/weapon', weaponsRouter)
+app.use('/api/character', charactersRouter)
+app.use('/api/class', classesRouter)
+app.use('/api/weapon', weaponsRouter)
 
 // app.get('/', (req, res, next)=>{
 
 // })
 
-app.listen(8000)
+app.listen(9000)
