@@ -27,7 +27,6 @@ router.post('/create/new/link', (req, res)=>{
 	const newClass = req.body
 	const createNewClass = `INSERT INTO classes VALUES (?)`
 	const weaponId = newClass.weapon_id
-
 	database.run(createNewClass, [newClass.name], function(error){
 		if(error){
 			console.log('adding new class failed')
@@ -89,7 +88,6 @@ router.get('/get/:id', (req, res)=>{
 				SELECT classes.name AS "Class Name" from classes
 				WHERE classes.oid = ${classId}
 				`
-
 				database.all(getNewOneClass, (error, results)=>{
 					if(error){
 						console.log(`get class at ${classId} failed`)
