@@ -55,7 +55,7 @@ router.post('/create/new/link', (req, res)=>{
 
 router.get('/get/all', (req, res)=>{
 	const getAllClasses = `
-	SELECT classes.name AS "Class Name", weapons.name AS "Weapons" FROM classes
+	SELECT classes.class_name, weapons.weapon_name FROM classes
 	JOIN classes_weapons ON class_id = classes.oid
 	JOIN weapons ON weapon_id = weapons.oid
 	`
@@ -72,7 +72,7 @@ router.get('/get/all', (req, res)=>{
 router.get('/get/:id', (req, res)=>{
 	const classId = req.params.id
 	const getOneClass = `
-	SELECT classes.name AS "Class Name", weapons.name AS "Weapons" from classes
+	SELECT classes.class_name, weapons.weapon_name from classes
 	JOIN classes_weapons ON class_id = classes.oid
 	JOIN weapons ON weapon_id = weapons.oid
 	WHERE classes.oid = ${classId}
@@ -85,7 +85,7 @@ router.get('/get/:id', (req, res)=>{
 			console.log('aaw')
 			if(results.length === 0){
 				const getNewOneClass = `
-				SELECT classes.name AS "Class Name" from classes
+				SELECT classes.class_name from classes
 				WHERE classes.oid = ${classId}
 				`
 				database.all(getNewOneClass, (error, results)=>{

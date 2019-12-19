@@ -27,7 +27,7 @@ router.post('/create/new', (req, res)=>{
 
 router.get('/get/all', (req, res)=>{
 	const getAllCharacters = `
-	SELECT characters.name AS "Character Name", classes.name AS "Class" FROM characters
+	SELECT characters.character_name, classes.class_name FROM characters
 	JOIN classes ON class_name_id = classes.oid
 	`
 	database.all(getAllCharacters, (error, results)=>{
@@ -43,7 +43,7 @@ router.get('/get/all', (req, res)=>{
 router.get('/get/:id', (req, res)=>{
 	const characterId = req.params.id
 	const getOneCharacter = `
-	SELECT characters.name AS "Character Name", classes.name AS "Class" FROM characters
+	SELECT characters.character_name, classes.class_name FROM characters
 	JOIN classes ON class_name_id = classes.oid
 	WHERE characters.oid = ${characterId}
 	`
