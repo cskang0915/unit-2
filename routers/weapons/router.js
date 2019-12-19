@@ -27,7 +27,7 @@ router.post('/create/new', (req, res)=>{
 
 router.get('/get/all', (req, res)=>{
 	const getAllWeapons = `
-	SELECT weapons.weapon_name, weapons.isRanged, weapons.isMelee, weapons.isMagic, classes.class_name, characters.character_name FROM weapons
+	SELECT weapons.weapon_name, weapons.rowid, weapons.isRanged, weapons.isMelee, weapons.isMagic, classes.class_name, characters.character_name FROM weapons
 	JOIN classes_weapons ON weapon_id = weapons.oid
 	JOIN classes ON class_id = classes.oid
 	JOIN characters ON class_name_id = classes.oid
@@ -45,7 +45,7 @@ router.get('/get/all', (req, res)=>{
 router.get('/get/:id', (req, res)=>{
 	const weaponId = req.params.id
 	const getOneWeapon = `
-	SELECT weapons.weapon_name, weapons.isRanged, weapons.isMelee, weapons.isMagic, classes.class_name, characters.character_name FROM weapons
+	SELECT weapons.weapon_name, weapons.rowid, weapons.isRanged, weapons.isMelee, weapons.isMagic, classes.class_name, characters.character_name FROM weapons
 	JOIN classes_weapons ON weapon_id = weapons.oid
 	JOIN classes ON class_id = classes.oid
 	JOIN characters ON class_name_id = classes.oid
