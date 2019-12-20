@@ -55,9 +55,7 @@ router.post('/create/new/link', (req, res)=>{
 
 router.get('/get/all', (req, res)=>{
 	const getAllClasses = `
-	SELECT classes.class_name, classes.rowid, weapons.weapon_name FROM classes
-	JOIN classes_weapons ON class_id = classes.oid
-	JOIN weapons ON weapon_id = weapons.oid
+	SELECT classes.class_name FROM classes
 	`
 	database.all(getAllClasses, (error, results)=>{
 		if(error){
